@@ -40,15 +40,27 @@
                     </li>
                     @endif --}}
 
-                    {{-- @if (Auth::user()->role->name == 'manager')
+                    @if (Auth::user()->role->name == 'user')
                     <li class="nav-small-cap">PERSONAL</li>
                     <li>
-                        <a class="has-arrow" href="#" aria-expanded="false"><i class="mdi mdi-account-outline"></i><span class="hide-menu">Data Barang</span></a>
-                        <ul aria-expanded="true" class="collapse">
-                            <li><a href="{{ route('manager.acc') }}">Permintaan Barang</a></li>
-                        </ul>
                     </li>
-                    @endif --}}
+                        {{-- <a class="has-arrow" href="" aria-expanded="false"><i class="mdi mdi-account-outline"></i><span class="hide-menu">Dashboard</span></a> --}}
+                        <li><a href="{{ route('homes') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Grafik Historical</a></li>
+                        {{-- <li><a href="{{ route('tambahuser') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Tambah User</a></li> --}}
+                        <li><a href="{{ route('history') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>History</a></li>
+                        
+                    @endif
+
+                    @if (Auth::user()->role->name == 'administrator')
+                    <li class="nav-small-cap">PERSONAL</li>
+                    <li>
+                    </li>
+                        {{-- <a class="has-arrow" href="" aria-expanded="false"><i class="mdi mdi-account-outline"></i><span class="hide-menu">Dashboard</span></a> --}}
+                        <li><a href="{{ route('homes') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Grafik Historical</a></li>
+                        <li><a href="{{ route('tambahuser') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Tambah User</a></li>
+                        <li><a href="{{ route('history') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>History</a></li>
+                        
+                    @endif
                 </ul>
             </nav>
             <!-- End Sidebar navigation -->
