@@ -100,6 +100,7 @@
         </style>
     </head>
     <body>
+        
         <div class="flex-center position-ref full-height">
             <div class="content">
                 <div class="container">
@@ -145,19 +146,26 @@
                                         </div>
                                         <div id="content5">5. Form komentar dan saran tambahan<br> <br> 
                                             <textarea name="kelima" id="" cols="30" rows="3" class="form-control"></textarea>
+                                            <br>
+                                            <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+
                                         </div>
                                         
                         
                                         <hr>
-                        
-                                        <button type="button" class="btn" onclick="prev()"> 
-                                            Prev
-                                        </button> 
-                                        <button type="button" class="btn" onclick="next()"> 
-                                            Next 
-                                        </button> 
+                                        
+                                        <div id="pencet" style="display:none;">
+                                            <button type="button" class="btn" onclick="prev()"> 
+                                                Prev
+                                            </button> 
+                                            <button type="button" class="btn" onclick="next()"> 
+                                                    Next 
+                                            </button> 
+                                        </div>
 
-                                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                                        {{-- <div id="subm" style="display:none"> --}}
+
+                                        {{-- </div> --}}
                                     </form>
                                 </div>
                             </div>
@@ -169,7 +177,12 @@
     <script src=" {{ asset('assets/plugins/jquery/jquery.min.js') }} "></script>
 
      <script>
-         
+            
+            $(".pertanyaan").click(function(){
+                $("#pencet").show();
+                $("#subm").show();
+            });
+
             var no_box = document 
             .querySelector('.no-box'); 
             var i = 0; 
@@ -179,6 +192,7 @@
             $("#content3").hide();
             $("#content4").hide();
             $("#content5").hide();
+
         function prev() { 
             if (i == 1) { 
                 document.getElementsByClassName( 
@@ -239,6 +253,6 @@
             }
                 return no_box.innerHTML = i + soal; 
         } 
-</script>
+    </script>
     </body>
 </html>

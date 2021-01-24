@@ -16,20 +16,21 @@ Auth::routes();
 
 Route::group(['prefix' => 'user', 'middleware' => ['auth', 'role:user']], function() {
 
-    Route::get('/', 'PenilaianController@home')->name('homes');
+    Route::get('/', 'PenilaianController@home')->name('homesi');
     // Route::get('/tambahuser', 'PenilaianController@tambahuser')->name('tambahuser');
-    Route::get('/history', 'PenilaianController@history')->name('history');
+    Route::get('/history', 'PenilaianController@history')->name('historyi');
     // Route::post('/tambahuser', 'PenilaianController@tambahuserpost')->name('tambahuserpost');
     
 });
 
-Route::group(['prefix' => 'administrator', 'middleware' => ['auth', 'role:administrator']], function() {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:administrator']], function() {
 
     Route::get('/', 'PenilaianController@home')->name('homes');
     Route::get('/tambahuser', 'PenilaianController@tambahuser')->name('tambahuser');
     Route::get('/history', 'PenilaianController@history')->name('history');
     Route::delete('/history/{id}', 'PenilaianController@deletehistory')->name('delete-history');
     Route::post('/tambahuser', 'PenilaianController@tambahuserpost')->name('tambahuserpost');
+    Route::delete('/tambahuser/{id}', 'PenilaianController@tambahuserdelete')->name('tambahuserdelete');
     
 });
 
@@ -42,4 +43,4 @@ Route::post('/pertanyaan', 'PenilaianController@storeCreate2')->name('storeCreat
 
 // Route::resource('penilaian', 'PenilaianController');
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');

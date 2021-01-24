@@ -45,9 +45,9 @@
                     <li>
                     </li>
                         {{-- <a class="has-arrow" href="" aria-expanded="false"><i class="mdi mdi-account-outline"></i><span class="hide-menu">Dashboard</span></a> --}}
-                        <li><a href="{{ route('homes') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Grafik Historical</a></li>
+                        <li><a href="{{ route('homesi') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Grafik Historical</a></li>
                         {{-- <li><a href="{{ route('tambahuser') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Tambah User</a></li> --}}
-                        <li><a href="{{ route('history') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>History</a></li>
+                        <li><a href="{{ route('historyi') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>History</a></li>
                         
                     @endif
 

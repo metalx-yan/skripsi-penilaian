@@ -94,6 +94,11 @@
         </style>
     </head>
     <body>
+        @if (session('success-message'))
+            <div class="alert alert-success">
+                {{ session('success-message') }}
+        </div>
+        @endif
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-right links">
@@ -155,5 +160,7 @@
                 </div>
             </div>
         </div>
+        @include('sweetalert::alert')
+
     </body>
 </html>

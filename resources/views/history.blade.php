@@ -41,6 +41,7 @@
                         <th>Nama</th>
                         <th>Penilaian</th>
                         <th>Grade</th>
+                        <th>Komentar</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -60,7 +61,8 @@
                             Buruk
                             @endif
                               
-                              </td>
+                            </td>
+                            <td>{{  str_word_count($item->soal5) > 3 ? substr($item->soal5,0,2)."[..]" : $item->soal5 }}</td>
                             <td>
                                 @if (Auth::user()->role->name == 'administrator')
                                     

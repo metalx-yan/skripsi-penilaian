@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Assessment;
 use App\User;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class PenilaianController extends Controller
 {
@@ -13,6 +14,12 @@ class PenilaianController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function tambahuserdelete($id)
+    {
+        $delete = User::find($id);
+        $delete->delete();
+        return redirect()->back();
+    }
     public function tambahuserpost(Request $request)
     {
         $user = User::create([
@@ -26,7 +33,8 @@ class PenilaianController extends Controller
     }
     public function tambahuser(Request $request)
     {   
-        return view('tambahuser');
+        $getUser = User::all();
+        return view('tambahuser', compact('getUser'));
     }
     public function tentang()
     {
@@ -117,6 +125,7 @@ class PenilaianController extends Controller
     public function create1(Request $request)
     {
         $penilaian = $request->session()->get('penilaian');
+        // Alert::success('Success Title', 'Success Description');
         // dd($penilaian);
         return view('welcome',compact('penilaian', $penilaian));
     }   
@@ -191,7 +200,7 @@ class PenilaianController extends Controller
 
         $request->session()->forget('penilaian');
         // dd($penilaian->name, $request->all(), ($request->pertama + $request->kedua + array_sum($request->ketiga) + array_sum($request->keempat))/4);
-        return redirect()->route('create1');
+        return redirect()->route('create1')->with('success', 'Berhasil menyelesaikan pertanyaan!');
     }
     /**
      * Display the specified resource.
