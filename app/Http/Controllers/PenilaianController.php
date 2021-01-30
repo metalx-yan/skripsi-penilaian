@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Assessment;
+use App\Current;
 use App\User;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -14,6 +15,43 @@ class PenilaianController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function current()
+    {
+        $query = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total , month(created_at) as month, grade')
+        ->groupBy('month', 'grade')->where('grade', 'buruk')->get();
+        $query2 = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total , month(created_at) as month, grade')
+        ->groupBy('month', 'grade')->where('grade', 'cukup')->get();
+        $query3 = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total , month(created_at) as month, grade')
+        ->groupBy('month', 'grade')->where('grade', 'baik')->get();
+        $query4 = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total , month(created_at) as month, grade')
+        ->groupBy('month', 'grade')->where('grade', 'sangat baik')->get();
+        $result = [];
+        foreach ($query as $value) {
+            $result[] = (double)$value->total;
+        }
+        $data = $result;
+
+        $result2 = [];
+        foreach ($query2 as $value2) {
+            $result2[] = (double)$value2->total;
+        }
+        $data2 = $result2;
+
+        $result3 = [];
+        foreach ($query3 as $value3) {
+            $result3[] = (double)$value3->total;
+        }
+        $data3 = $result3;
+
+        $result4 = [];
+        foreach ($query4 as $value4) {
+            $result4[] = (double)$value4->total;
+        }
+        $data4 = $result4;
+
+        return view('current', compact('data','data2', 'data3', 'data4'));
+    }
+
     public function tambahuserdelete($id)
     {
         $delete = User::find($id);
@@ -188,6 +226,17 @@ class PenilaianController extends Controller
         // dd($request->all(), $data, $grade);
         
         $insert = new Assessment();
+        $insert->nik = $penilaian->nik;
+        $insert->name = $penilaian->name;
+        $insert->soal1 = $request->pertama;
+        $insert->soal2 = $request->kedua;
+        $insert->soal3 = array_sum($request->ketiga);
+        $insert->soal4 = array_sum($request->keempat);
+        $insert->soal5 = $request->kelima;
+        $insert->grade = $grade;
+        $insert->save();
+
+        $insert = new Current();
         $insert->nik = $penilaian->nik;
         $insert->name = $penilaian->name;
         $insert->soal1 = $request->pertama;

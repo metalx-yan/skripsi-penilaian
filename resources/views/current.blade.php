@@ -40,7 +40,7 @@
                 type: 'column'
             },
             title: {
-                text: 'Current'
+                text: 'Historical'
             },
             subtitle: {
                 text: 'Source: Penilaian Kelurahan Gandasari'
