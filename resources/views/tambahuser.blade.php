@@ -98,11 +98,21 @@
                             <td>{{ $user->username }}</td>
                             <td>{{ $user->role->name }}</td>
                             <td>
-                                <form action="{{ route('tambahuserdelete', $user->id) }}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" onclick="return myFunction();" class="btn btn-danger btn-sm">Delete</button>
-                                </form>
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <a href="{{ route('edituser', $user->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    </div>
+                                    <div class="col-md-1">
+
+                                    </div>
+                                    <div class="col-md-1">
+                                        <form action="{{ route('tambahuserdelete', $user->id) }}" method="post">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" onclick="return myFunction();" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @endforeach

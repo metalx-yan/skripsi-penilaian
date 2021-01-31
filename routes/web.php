@@ -19,6 +19,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth', 'role:user']], functi
     Route::get('/', 'PenilaianController@home')->name('homesi');
     Route::get('/current', 'PenilaianController@current')->name('currently');
     Route::get('/history', 'PenilaianController@history')->name('historyi');
+    Route::get('/history/cetak_pdf', 'PenilaianController@cetak_pdf')->name('pdfi');
     
 });
 
@@ -28,8 +29,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:administrator'
     Route::get('/tambahuser', 'PenilaianController@tambahuser')->name('tambahuser');
     Route::get('/history', 'PenilaianController@history')->name('history');
     Route::delete('/history/{id}', 'PenilaianController@deletehistory')->name('delete-history');
+    Route::get('/history/cetak_pdf', 'PenilaianController@cetak_pdf')->name('pdf');
     Route::post('/tambahuser', 'PenilaianController@tambahuserpost')->name('tambahuserpost');
     Route::delete('/tambahuser/{id}', 'PenilaianController@tambahuserdelete')->name('tambahuserdelete');
+    Route::get('/edituser/{id}', 'PenilaianController@edituser')->name('edituser');
+    Route::put('/edituser/{id}', 'PenilaianController@updateuser')->name('updateuser');
     Route::get('/current', 'PenilaianController@current')->name('current');
     
 });

@@ -49,7 +49,7 @@
                         <li><a href="{{ route('currently') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Grafik Historical</a></li>
 
                         {{-- <li><a href="{{ route('tambahuser') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Tambah User</a></li> --}}
-                        <li><a href="{{ route('historyi') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>History</a></li>
+                        <li><a href="{{ route('historyi') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Histories</a></li>
                         
                     @endif
 
@@ -61,7 +61,7 @@
                         <li><a href="{{ route('homes') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Grafik Current</a></li>
                         <li><a href="{{ route('current') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Grafik Historical</a></li>
                         <li><a href="{{ route('tambahuser') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Tambah User</a></li>
-                        <li><a href="{{ route('history') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>History</a></li>
+                        <li><a href="{{ route('history') }}"><i class="mdi mdi-checkbox-marked-circle-outline"></i>Histories</a></li>
                         
                     @endif
                 </ul>

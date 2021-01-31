@@ -7,6 +7,7 @@ use App\Assessment;
 use App\Current;
 use App\User;
 use RealRashid\SweetAlert\Facades\Alert;
+use PDF;
 
 class PenilaianController extends Controller
 {
@@ -15,6 +16,14 @@ class PenilaianController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function cetak_pdf()
+    {
+    	$penilaian = Assessment::all();
+ 
+    	$pdf = PDF::loadview('penilaian_pdf',['penilaian'=>$penilaian]);
+    	return $pdf->download('laporan-penilaian');
+    }
+
     public function current()
     {
         $query = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total , month(created_at) as month, grade')
@@ -73,6 +82,22 @@ class PenilaianController extends Controller
     {   
         $getUser = User::all();
         return view('tambahuser', compact('getUser'));
+    }
+    public function edituser($id)
+    {
+        $edit = User::find($id);
+        return view('edituser', compact('edit'));
+    }
+    public function updateuser(Request $request, $id)
+    {
+        $update = User::find($id);
+        $update->name = $request->name;
+        $update->username = $request->username;
+        $update->role_id = $request->hakakses;
+        $update->save();
+
+        return redirect()->route('tambahuser');
+        
     }
     public function tentang()
     {

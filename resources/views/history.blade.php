@@ -35,6 +35,7 @@
                 </div>
             </div>
             <br>
+            <a href="{{ Auth::user()->role->name == 'user' ? route('pdfi') : route('pdf') }}" class="btn btn-primary btn-sm" target="_blank" style="margin-bottom:20px;">PDF</a>
             <table id="myTable" >
                 <thead>
                     <tr>
@@ -43,7 +44,12 @@
                         <th>Penilaian</th>
                         <th>Grade</th>
                         <th>Komentar</th>
+                        @if (Auth::user()->role->name == 'administrator')
+                            
                         <th>Action</th>
+                        @else
+                            
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -64,17 +70,19 @@
                               
                             </td>
                             <td>{{  str_word_count($item->soal5) > 3 ? substr($item->soal5,0,2)."[..]" : $item->soal5 }}</td>
+                            
+                            @if (Auth::user()->role->name == 'administrator')
                             <td>
-                                @if (Auth::user()->role->name == 'administrator')
                                     
                                 <form action="{{ route('delete-history', $item->id) }}" method="post">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" onclick="return myFunction();" class="btn btn-danger btn-sm">Delete</button>    
                                 </form>
-                                
-                                @endif
+
                             </td>
+                            @else
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>
@@ -102,10 +110,8 @@
 
         $(document).ready( function () {
             var table = $('#myTable').DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    'pdf'
-                ]
+                
+                // table.fnSetColumnVis( 1, false ); 
             });
 
             $('#dropdown1').on('change', function () {
