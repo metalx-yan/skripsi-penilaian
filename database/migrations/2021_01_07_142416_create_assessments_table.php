@@ -15,7 +15,7 @@ class CreateAssessmentsTable extends Migration
     {
         Schema::create('assessments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nik');
+            $table->string('nik')->unique();
             $table->string('name');
             $table->integer('soal1');
             $table->integer('soal2');

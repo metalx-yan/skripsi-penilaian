@@ -13,16 +13,34 @@
         </div>
     </div>
 
+    
     <div class="card">
         <div class="card-title">
             
         </div>
         <div class="card-body">
-            <figure class="highcharts-figure">
+                    {{-- <div class="container-fluid"> --}}
+                @if (Auth::user()->role->name == 'administrator')
+                <div class="row">
+                    <div class="col-md-1">
+                        <form action="" method="post">
+                            @csrf
+                            <button type="submit" class="btn btn-danger btn-sm">Reset</button>
+                        </form>
+                    </div>
+                    <div class="col-md-1">
+                        <form action="{{ route('historypost') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
+                            <button type="submit" class="btn btn-success btn-sm">Simpan</button>
+                        </form>
+                    </div>
+                  
+                </div>
+                @endif
                 <div id="container"></div>
-               
-            </figure>
-        </div>
+        {{-- </div> --}}
+    </div>
     </div>
 </div>
 @endsection
@@ -82,7 +100,8 @@
                     borderWidth: 0
                 }
             },
-            series: [{
+            series: [
+                {
                 name: 'Buruk',
                 data: {!! json_encode($data) !!}
 
@@ -98,7 +117,8 @@
                 name: 'Sangat Baik',
                 data: {!! json_encode($data4) !!}
 
-            }]
+            }
+            ]
         });
     </script>
 

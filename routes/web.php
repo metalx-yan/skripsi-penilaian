@@ -35,6 +35,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:administrator'
     Route::get('/edituser/{id}', 'PenilaianController@edituser')->name('edituser');
     Route::put('/edituser/{id}', 'PenilaianController@updateuser')->name('updateuser');
     Route::get('/current', 'PenilaianController@current')->name('current');
+    Route::post('/history', 'PenilaianController@historypost')->name('historypost');
+    Route::delete('/current/{id}', 'PenilaianController@currentdelete')->name('currentdelete');
     
 });
 

@@ -104,8 +104,9 @@
                 <div class="top-right links">
                     @auth
                         {{-- <a href="{{ url('/home') }}">Home</a> --}}
+                        {{-- <a href="{{ route('login') }}" class="btn btn-warning">Login</a> --}}
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-warning">Login</a>
+                    <a href="{{ route('login') }}" class="btn btn-warning">Login</a>
 
                         {{-- @if (Route::has('register'))
                             <a href="{{ route('register') }}" class="btn btn-success">Register</a>
