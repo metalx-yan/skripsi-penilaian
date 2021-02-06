@@ -10,6 +10,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Input;
+use DB;
 
 class PenilaianController extends Controller
 {
@@ -23,109 +24,267 @@ class PenilaianController extends Controller
     	$penilaian = Assessment::all();
  
     	$pdf = PDF::loadview('penilaian_pdf',['penilaian'=>$penilaian]);
-    	return $pdf->download('laporan-penilaian');
+    	return $pdf->download('laporan-penilaian.pdf');
     }
 
     public function current()
     {
         
-        $bulan = Current::selectRaw('month(created_at) as month,
-        CASE MONTH(created_at) WHEN 1 THEN "Januari"
-                       WHEN 2 THEN "Febuari"
-                       WHEN 3 THEN "Maret"
-                       WHEN 4 THEN "April"
-                       WHEN 5 THEN "Mei"
-                       WHEN 6 THEN "Juni"
-                       WHEN 7 THEN "Juli"
-                       WHEN 8 THEN "Agustus"
-                       WHEN 9 THEN "September"
-                       WHEN 10 THEN "Oktober"
-                       WHEN 11 THEN "November"
-                       WHEN 12 THEN "Desember"
-            END as bulan')
-        ->groupBy('month','bulan')->orderBy('month')->get();
-        
-
-        $date = [];
+        $bulan = Current::selectRaw('
+        title, tahap')
+        ->groupBy('tahap','title')->orderBy('tahap', 'asc')->get();
+        $kak = [];
+        $tah = [];
+        foreach ($bulan as $ka) {
+            $kak[] = $ka->tahap;
+            $tah[] = $ka->title;
+        }
+        // dd($kak);
+        $date = '';
+        $date1 = '';
+        $date2 = '';
+        $date3 = '';
+        $data1 = [];
+        $data2 = [];
+        $data3 = [];
+        $data4 = [];
         $sangat = [];
         $baik = [];
-        $cukup = [];
-        $buruk = [];
-        foreach ($bulan as $value) {
-            $date[] = $value->bulan;
-            $sangat[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
-            CASE MONTH(created_at) WHEN 1 THEN "Januari"
-                       WHEN 2 THEN "Febuari"
-                       WHEN 3 THEN "Maret"
-                       WHEN 4 THEN "April"
-                       WHEN 5 THEN "Mei"
-                       WHEN 6 THEN "Juni"
-                       WHEN 7 THEN "Juli"
-                       WHEN 8 THEN "Agustus"
-                       WHEN 9 THEN "September"
-                       WHEN 10 THEN "Oktober"
-                       WHEN 11 THEN "November"
-                       WHEN 12 THEN "Desember"
-            END as month
-            , grade')
-            ->whereMonth('created_at', $value->month)->where('grade', 'sangat baik')->groupBy('month','grade')->get();
-            $baik[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
-            CASE MONTH(created_at) WHEN 1 THEN "Januari"
-                       WHEN 2 THEN "Febuari"
-                       WHEN 3 THEN "Maret"
-                       WHEN 4 THEN "April"
-                       WHEN 5 THEN "Mei"
-                       WHEN 6 THEN "Juni"
-                       WHEN 7 THEN "Juli"
-                       WHEN 8 THEN "Agustus"
-                       WHEN 9 THEN "September"
-                       WHEN 10 THEN "Oktober"
-                       WHEN 11 THEN "November"
-                       WHEN 12 THEN "Desember"
-            END as month
-            , grade')
-            ->whereMonth('created_at', $value->month)->where('grade', 'baik')->groupBy('month','grade')->get();
-            $cukup[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
-            CASE MONTH(created_at) WHEN 1 THEN "Januari"
-                       WHEN 2 THEN "Febuari"
-                       WHEN 3 THEN "Maret"
-                       WHEN 4 THEN "April"
-                       WHEN 5 THEN "Mei"
-                       WHEN 6 THEN "Juni"
-                       WHEN 7 THEN "Juli"
-                       WHEN 8 THEN "Agustus"
-                       WHEN 9 THEN "September"
-                       WHEN 10 THEN "Oktober"
-                       WHEN 11 THEN "November"
-                       WHEN 12 THEN "Desember"
-            END as month
-            , grade')
-            ->whereMonth('created_at', $value->month)->where('grade', 'cukup')->groupBy('month','grade')->get();
-            $buruk[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
-            CASE MONTH(created_at) WHEN 1 THEN "Januari"
-                       WHEN 2 THEN "Febuari"
-                       WHEN 3 THEN "Maret"
-                       WHEN 4 THEN "April"
-                       WHEN 5 THEN "Mei"
-                       WHEN 6 THEN "Juni"
-                       WHEN 7 THEN "Juli"
-                       WHEN 8 THEN "Agustus"
-                       WHEN 9 THEN "September"
-                       WHEN 10 THEN "Oktober"
-                       WHEN 11 THEN "November"
-                       WHEN 12 THEN "Desember"
-            END as month
-            , grade')
-            ->whereMonth('created_at', $value->month)->where('grade', 'buruk')->groupBy('month','grade')->get();
-            
-        }
+        // $cukup = [];
+        // $buruk = [];
+        $sangat[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+        CASE MONTH(created_at) WHEN 1 THEN "Januari"
+                   WHEN 2 THEN "Febuari"
+                   WHEN 3 THEN "Maret"
+                   WHEN 4 THEN "April"
+                   WHEN 5 THEN "Mei"
+                   WHEN 6 THEN "Juni"
+                   WHEN 7 THEN "Juli"
+                   WHEN 8 THEN "Agustus"
+                   WHEN 9 THEN "September"
+                   WHEN 10 THEN "Oktober"
+                   WHEN 11 THEN "November"
+                   WHEN 12 THEN "Desember"
+        END as month, tahap
+        , grade')
+         ->where('grade', 'sangat baik')->groupBy('month','grade','tahap')->orderBy('tahap', 'desc')->get();
         
-        return view('current', compact('data1','data2','bulan', 'date', 'sangat','baik','cukup','buruk'));
+         foreach ($sangat as $value) {
+            $date = $value ;
+        }
+        foreach ($value as $val) {
+           $data1[] = $val;
+        }
+
+         $baik[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+        CASE MONTH(created_at) WHEN 1 THEN "Januari"
+                   WHEN 2 THEN "Febuari"
+                   WHEN 3 THEN "Maret"
+                   WHEN 4 THEN "April"
+                   WHEN 5 THEN "Mei"
+                   WHEN 6 THEN "Juni"
+                   WHEN 7 THEN "Juli"
+                   WHEN 8 THEN "Agustus"
+                   WHEN 9 THEN "September"
+                   WHEN 10 THEN "Oktober"
+                   WHEN 11 THEN "November"
+                   WHEN 12 THEN "Desember"
+        END as month, tahap
+        , grade')
+         ->where('grade', 'baik')->groupBy('month','grade','tahap')->orderBy('tahap', 'desc')->get();
+        foreach ($baik as $value1) {
+            $date1 = $value1;
+        }
+        foreach ($value1 as $val) {
+                $data2[] = $val;
+        }
+
+        $cukup[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+        CASE MONTH(created_at) WHEN 1 THEN "Januari"
+                   WHEN 2 THEN "Febuari"
+                   WHEN 3 THEN "Maret"
+                   WHEN 4 THEN "April"
+                   WHEN 5 THEN "Mei"
+                   WHEN 6 THEN "Juni"
+                   WHEN 7 THEN "Juli"
+                   WHEN 8 THEN "Agustus"
+                   WHEN 9 THEN "September"
+                   WHEN 10 THEN "Oktober"
+                   WHEN 11 THEN "November"
+                   WHEN 12 THEN "Desember"
+        END as month, tahap
+        , grade')
+         ->where('grade', 'cukup')->groupBy('month','grade','tahap')->orderBy('tahap', 'desc')->get();
+        foreach ($cukup as $value2) {
+            $date2 = $value2;
+        }
+        foreach ($value2 as $val) {
+                $data3[] = $val;
+        }
+
+        $buruk[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+        CASE MONTH(created_at) WHEN 1 THEN "Januari"
+                   WHEN 2 THEN "Febuari"
+                   WHEN 3 THEN "Maret"
+                   WHEN 4 THEN "April"
+                   WHEN 5 THEN "Mei"
+                   WHEN 6 THEN "Juni"
+                   WHEN 7 THEN "Juli"
+                   WHEN 8 THEN "Agustus"
+                   WHEN 9 THEN "September"
+                   WHEN 10 THEN "Oktober"
+                   WHEN 11 THEN "November"
+                   WHEN 12 THEN "Desember"
+        END as month, tahap
+        , grade')
+         ->where('grade', 'buruk')->groupBy('month','grade','tahap')->orderBy('tahap', 'desc')->get();
+        foreach ($buruk as $value3) {
+            $date3 = $value3;
+        }
+        foreach ($value3 as $val) {
+                $data4[] = $val;
+        }
+        //  dd($data2);
+        //  $jos = "{name : 'Baik' ,data : [100]},{name : 'Sangat Baik' ,data : [1000]}";
+
+        // $sangat[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+        // CASE MONTH(created_at) WHEN 1 THEN "Januari"
+        //            WHEN 2 THEN "Febuari"
+        //            WHEN 3 THEN "Maret"
+        //            WHEN 4 THEN "April"
+        //            WHEN 5 THEN "Mei"
+        //            WHEN 6 THEN "Juni"
+        //            WHEN 7 THEN "Juli"
+        //            WHEN 8 THEN "Agustus"
+        //            WHEN 9 THEN "September"
+        //            WHEN 10 THEN "Oktober"
+        //            WHEN 11 THEN "November"
+        //            WHEN 12 THEN "Desember"
+        // END as month
+        // , grade')
+        // ->where('grade', 'sangat baik')->groupBy('month','grade','tahap')->get();
+        // $baik[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+        //     CASE MONTH(created_at) WHEN 1 THEN "Januari"
+        //                WHEN 2 THEN "Febuari"
+        //                WHEN 3 THEN "Maret"
+        //                WHEN 4 THEN "April"
+        //                WHEN 5 THEN "Mei"
+        //                WHEN 6 THEN "Juni"
+        //                WHEN 7 THEN "Juli"
+        //                WHEN 8 THEN "Agustus"
+        //                WHEN 9 THEN "September"
+        //                WHEN 10 THEN "Oktober"
+        //                WHEN 11 THEN "November"
+        //                WHEN 12 THEN "Desember"
+        //     END as month
+        //     , grade')
+        //     ->where('grade', 'baik')->groupBy('tahap','month','grade')->get();
+        //     $cukup[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+        //     CASE MONTH(created_at) WHEN 1 THEN "Januari"
+        //                WHEN 2 THEN "Febuari"
+        //                WHEN 3 THEN "Maret"
+        //                WHEN 4 THEN "April"
+        //                WHEN 5 THEN "Mei"
+        //                WHEN 6 THEN "Juni"
+        //                WHEN 7 THEN "Juli"
+        //                WHEN 8 THEN "Agustus"
+        //                WHEN 9 THEN "September"
+        //                WHEN 10 THEN "Oktober"
+        //                WHEN 11 THEN "November"
+        //                WHEN 12 THEN "Desember"
+        //     END as month
+        //     , grade')
+        //     ->where('grade', 'cukup')->groupBy('tahap','month','grade')->get();
+        //     $buruk[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+        //     CASE MONTH(created_at) WHEN 1 THEN "Januari"
+        //                WHEN 2 THEN "Febuari"
+        //                WHEN 3 THEN "Maret"
+        //                WHEN 4 THEN "April"
+        //                WHEN 5 THEN "Mei"
+        //                WHEN 6 THEN "Juni"
+        //                WHEN 7 THEN "Juli"
+        //                WHEN 8 THEN "Agustus"
+        //                WHEN 9 THEN "September"
+        //                WHEN 10 THEN "Oktober"
+        //                WHEN 11 THEN "November"
+        //                WHEN 12 THEN "Desember"
+        //     END as month
+        //     , grade')
+        //     ->where('grade', 'buruk')->groupBy('tahap','month','grade')->get();
+        // foreach ($bulan as $value) {
+        //     $date[] = $value->bulan;
+            // $sangat[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+            // CASE MONTH(created_at) WHEN 1 THEN "Januari"
+            //            WHEN 2 THEN "Febuari"
+            //            WHEN 3 THEN "Maret"
+            //            WHEN 4 THEN "April"
+            //            WHEN 5 THEN "Mei"
+            //            WHEN 6 THEN "Juni"
+            //            WHEN 7 THEN "Juli"
+            //            WHEN 8 THEN "Agustus"
+            //            WHEN 9 THEN "September"
+            //            WHEN 10 THEN "Oktober"
+            //            WHEN 11 THEN "November"
+            //            WHEN 12 THEN "Desember"
+            // END as month
+            // , grade')
+            // ->where('grade', 'sangat baik')->groupBy('month','grade','tahap')->get();
+            // $baik[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+            // CASE MONTH(created_at) WHEN 1 THEN "Januari"
+            //            WHEN 2 THEN "Febuari"
+            //            WHEN 3 THEN "Maret"
+            //            WHEN 4 THEN "April"
+            //            WHEN 5 THEN "Mei"
+            //            WHEN 6 THEN "Juni"
+            //            WHEN 7 THEN "Juli"
+            //            WHEN 8 THEN "Agustus"
+            //            WHEN 9 THEN "September"
+            //            WHEN 10 THEN "Oktober"
+            //            WHEN 11 THEN "November"
+            //            WHEN 12 THEN "Desember"
+            // END as month
+            // , grade')
+            // ->whereMonth('created_at', $value->month)->where('grade', 'baik')->groupBy('tahap','month','grade')->get();
+            // $cukup[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+            // CASE MONTH(created_at) WHEN 1 THEN "Januari"
+            //            WHEN 2 THEN "Febuari"
+            //            WHEN 3 THEN "Maret"
+            //            WHEN 4 THEN "April"
+            //            WHEN 5 THEN "Mei"
+            //            WHEN 6 THEN "Juni"
+            //            WHEN 7 THEN "Juli"
+            //            WHEN 8 THEN "Agustus"
+            //            WHEN 9 THEN "September"
+            //            WHEN 10 THEN "Oktober"
+            //            WHEN 11 THEN "November"
+            //            WHEN 12 THEN "Desember"
+            // END as month
+            // , grade')
+            // ->whereMonth('created_at', $value->month)->where('grade', 'cukup')->groupBy('tahap','month','grade')->get();
+            // $buruk[] = Current::selectRaw('sum(soal1) as soal1, sum(soal2) as soal2, sum(soal3) as soal3, sum(soal4) as soal4, sum(soal1 + soal2 + soal3 + soal4)/4 as total, 
+            // CASE MONTH(created_at) WHEN 1 THEN "Januari"
+            //            WHEN 2 THEN "Febuari"
+            //            WHEN 3 THEN "Maret"
+            //            WHEN 4 THEN "April"
+            //            WHEN 5 THEN "Mei"
+            //            WHEN 6 THEN "Juni"
+            //            WHEN 7 THEN "Juli"
+            //            WHEN 8 THEN "Agustus"
+            //            WHEN 9 THEN "September"
+            //            WHEN 10 THEN "Oktober"
+            //            WHEN 11 THEN "November"
+            //            WHEN 12 THEN "Desember"
+            // END as month
+            // , grade')
+            // ->whereMonth('created_at', $value->month)->where('grade', 'buruk')->groupBy('tahap','month','grade')->get();
+            
+        // }
+        return view('current', compact('data1','data2','bulan', 'data3','data4', 'sangat','baik','cukup','buruk','kak', 'jos', 'tah'));
     }
 
     public function currentdelete($id)
     {
-        $find = Current::whereMonth('created_at', $id)->delete();
+        $find = Current::where('tahap', $id)->delete();
         
         // dd($find);
         return redirect()->back();
@@ -174,6 +333,11 @@ class PenilaianController extends Controller
         return view('tentang');
     }
 
+    public function resetcurrent()
+    {
+        Assessment::truncate();
+        return redirect()->back();
+    }
     public function home(Request $request)
     {
 
@@ -309,13 +473,13 @@ class PenilaianController extends Controller
     {
         $penilaian = $request->session()->get('penilaian');
         $data = ($request->pertama + $request->kedua + array_sum($request->ketiga) + array_sum($request->keempat))/4;
-        if($data >= 90){
+        if($data >= 81){
             $grade = 'sangat baik';
-        }else if($data >= 80){
+        }else if($data >= 61){
             $grade = 'baik';
-        }else if($data >= 70){
+        }else if($data >= 41){
             $grade = 'cukup';
-        }else if($data < 70){
+        }else if($data < 41){
             $grade = 'buruk';
         }
         // dd($request->all(), $data, $grade);
@@ -349,27 +513,38 @@ class PenilaianController extends Controller
 
     public function historypost(Request $request)
     {
-        $data = Assessment::whereMonth('created_at', Carbon::parse($request->date)->month)->get()->toArray();
+        $data = Assessment::all();
+        $no = 1;
+        $cek = Current::orderBy('tahap', 'desc')->first();
+        $grade = ['sangat baik', 'baik', 'cukup', 'buruk'];
         $jes = [];
-        foreach ($data as $dat) {
-            $jes[] = $dat;
+        $baikdiff = [];
+        $baikint = [];
+        foreach ($data as $aku) {
+            if ($data[0]->grade != '' && $data[0]->tahap == null) {
+                $jes[] = $aku->grade;
+            }
         }
-        $no = 0;
-        $test1 = [];
-        foreach ($jes as $key) {
-            $test1[] = $jes[$no++]['nik'];
-        }
-        $as = Current::whereIn('nik', $test1)->get()->toArray();
-        $jos = [];
-        $ang = 0;
-        foreach ($as as $sa) {
-            $jos[] = $as[$ang++]['nik'];
-        }
-        
-        if (array_intersect($test1,$jos) != null) {
-            $ak = Assessment::whereIn('nik', array_intersect($test1,$jos))->get();
-            foreach ($ak as $aku) {
-                Current::whereIn('nik', array_intersect($test1,$jos))->update([
+        // dd($cek == null || $cek == '');
+        if ($cek == null || $cek == '') {
+            foreach (array_diff($grade,$jes) as $diff) {
+                Current::insert([
+                    'nik' => '',
+                    'name' => '',
+                    'soal1' => 0,
+                    'soal2' => 0,
+                    'soal3' => 0,
+                    'soal4' => 0,
+                    'soal5' => 0,
+                    'grade' => $diff,
+                    'tahap' => $no,
+                    'title' => $request->title,
+                    'created_at' => $aku->created_at,
+                    'updated_at' => $aku->updated_at
+                ]);
+            }
+            foreach ($data as $aku) {
+                Current::insert([
                     'nik' => $aku->nik,
                     'name' => $aku->name,
                     'soal1' => $aku->soal1,
@@ -377,26 +552,118 @@ class PenilaianController extends Controller
                     'soal3' => $aku->soal3,
                     'soal4' => $aku->soal4,
                     'soal5' => $aku->soal5,
-                    'grade' => $aku->grade
+                    'grade' => $aku->grade,
+                    'tahap' => $no,
+                    'title' => $request->title,
+                    'created_at' => $aku->created_at,
+                    'updated_at' => $aku->updated_at
+                ]);
+            }    
+        } else {
+            $cik = Current::orderBy('tahap', 'desc')->first()->toArray();
+            foreach (array_diff($grade,$jes) as $diff) {
+                Current::insert([
+                    'nik' => '',
+                    'name' => '',
+                    'soal1' => 0,
+                    'soal2' => 0,
+                    'soal3' => 0,
+                    'soal4' => 0,
+                    'soal5' => 0,
+                    'grade' => $diff,
+                    'tahap' => $cik['tahap']+1,
+                    'title' => $request->title,
+                    'created_at' => $aku->created_at,
+                    'updated_at' => $aku->updated_at
+                ]);
+            }
+            foreach ($data as $aku) {
+                Current::insert([
+                    'nik' => $aku->nik,
+                    'name' => $aku->name,
+                    'soal1' => $aku->soal1,
+                    'soal2' => $aku->soal2,
+                    'soal3' => $aku->soal3,
+                    'soal4' => $aku->soal4,
+                    'soal5' => $aku->soal5,
+                    'grade' => $aku->grade,
+                    'tahap' => $cik['tahap']+1,
+                    'title' => $request->title,
+                    'created_at' => $aku->created_at,
+                    'updated_at' => $aku->updated_at
                 ]);
             }
         }
+        
+        
+        // dd($baikdiff,$baikint);
 
-        if (array_diff($test1,$jos) != null) {
-            $ka = Assessment::whereIn('nik', array_diff($test1,$jos))->get();
-            foreach ($ka as $value) {
-                $insert = new Current();
-                $insert->nik = $value->nik;
-                $insert->name = $value->name;
-                $insert->soal1 = $value->soal1;
-                $insert->soal2 = $value->soal2;
-                $insert->soal3 = $value->soal3;
-                $insert->soal4 = $value->soal4;
-                $insert->soal5 = $value->soal5;
-                $insert->grade = $value->grade;
-                $insert->save();
-            }
-        } 
+
+        // } else {
+        //     $cik = Current::orderBy('tahap', 'desc')->first()->toArray();
+        //     foreach ($data as $aku) {
+        //         Current::insert([
+        //             'nik' => $aku->nik,
+        //             'name' => $aku->name,
+        //             'soal1' => $aku->soal1,
+        //             'soal2' => $aku->soal2,
+        //             'soal3' => $aku->soal3,
+        //             'soal4' => $aku->soal4,
+        //             'soal5' => $aku->soal5,
+        //             'grade' => $aku->grade,
+        //             'tahap' => $cik['tahap'] + 1,
+        //             'created_at' => $aku->created_at,
+        //             'updated_at' => $aku->updated_at
+        //         ]);
+        //     }
+        // }
+        // $jes = [];
+        // foreach ($data as $dat) {
+        //     $jes[] = $dat;
+        // }
+        // $no = 0;
+        // $test1 = [];
+        // foreach ($jes as $key) {
+        //     $test1[] = $jes[$no++]['nik'];
+        // }
+        // $as = Current::whereIn('nik', $test1)->get()->toArray();
+        // $jos = [];
+        // $ang = 0;
+        // foreach ($as as $sa) {
+        //     $jos[] = $as[$ang++]['nik'];
+        // }
+        
+        // if (array_intersect($test1,$jos) != null) {
+        //     $ak = Assessment::whereIn('nik', array_intersect($test1,$jos))->get();
+        //     foreach ($ak as $aku) {
+        //         Current::whereIn('nik', array_intersect($test1,$jos))->update([
+        //             'nik' => $aku->nik,
+        //             'name' => $aku->name,
+        //             'soal1' => $aku->soal1,
+        //             'soal2' => $aku->soal2,
+        //             'soal3' => $aku->soal3,
+        //             'soal4' => $aku->soal4,
+        //             'soal5' => $aku->soal5,
+        //             'grade' => $aku->grade
+        //         ]);
+        //     }
+        // }
+
+        // if (array_diff($test1,$jos) != null) {
+        //     $ka = Assessment::whereIn('nik', array_diff($test1,$jos))->get();
+        //     foreach ($ka as $value) {
+        //         $insert = new Current();
+        //         $insert->nik = $value->nik;
+        //         $insert->name = $value->name;
+        //         $insert->soal1 = $value->soal1;
+        //         $insert->soal2 = $value->soal2;
+        //         $insert->soal3 = $value->soal3;
+        //         $insert->soal4 = $value->soal4;
+        //         $insert->soal5 = $value->soal5;
+        //         $insert->grade = $value->grade;
+        //         $insert->save();
+        //     }
+        // } 
 
         return redirect()->back();
     // dd(Carbon::parse($request->date)->month, $data);

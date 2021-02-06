@@ -23,17 +23,44 @@
                 @if (Auth::user()->role->name == 'administrator')
                 <div class="row">
                     <div class="col-md-1">
-                        <form action="" method="post">
+                        <!-- Button trigger modal -->
+                        
+                        <form action="{{ route('resetcurrent') }}" method="post">
                             @csrf
+                            @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">Reset</button>
                         </form>
                     </div>
                     <div class="col-md-1">
-                        <form action="{{ route('historypost') }}" method="post">
-                            @csrf
-                            <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
-                            <button type="submit" class="btn btn-success btn-sm">Simpan</button>
-                        </form>
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter">
+                                Simpan
+                            </button>
+                            
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ route('historypost') }}" method="post">
+                                            @csrf
+                                            <input type="text" name="title" class="form-control" required>
+                                            {{-- <button type="submit" class="btn btn-success btn-sm">Simpan</button> --}}
+                                            <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        
                     </div>
                   
                 </div>
@@ -65,18 +92,7 @@
             },
             xAxis: {
                 categories: [
-                    'Jan',
-                    'Feb',
-                    'Mar',
-                    'Apr',
-                    'May',
-                    'Jun',
-                    'Jul',
-                    'Aug',
-                    'Sep',
-                    'Oct',
-                    'Nov',
-                    'Dec'
+                    'Current'
                 ],
                 crosshair: true
             },
@@ -101,21 +117,24 @@
                 }
             },
             series: [
-                {
-                name: 'Buruk',
-                data: {!! json_encode($data) !!}
+            {
+                name: 'Sangat Baik',
+                data: {!! json_encode($data4) !!}
 
-            }, {
-                name: 'Cukup',
-                data: {!! json_encode($data2) !!}
-
-            }, {
+            },
+            {
                 name: 'Baik',
                 data: {!! json_encode($data3) !!}
 
-            }, {
-                name: 'Sangat Baik',
-                data: {!! json_encode($data4) !!}
+            },
+            {
+                name: 'Cukup',
+                data: {!! json_encode($data2) !!}
+
+            },
+            {
+                name: 'Buruk',
+                data: {!! json_encode($data) !!}
 
             }
             ]

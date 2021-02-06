@@ -16,7 +16,7 @@
             
         </div>
         <div class="card-body">
-            <form action="{{ route('updateuser', $edit->id) }}" method="post">
+            <form action="{{ route('updateuser') }}" method="post">
                 <div class="row">
                     @csrf
                     @method('PUT')

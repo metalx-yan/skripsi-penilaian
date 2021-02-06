@@ -23,6 +23,8 @@ class CreateCurrentsTable extends Migration
             $table->integer('soal4');
             $table->string('soal5');
             $table->string('grade');
+            $table->integer('tahap');
+            $table->string('title');
             $table->timestamps();
         });
     }
